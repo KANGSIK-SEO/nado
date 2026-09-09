@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-'b2-1 | 나만의 용돈 기입장 프로그램 만들기\n실행: python3 b2-1.py; cd generated/b2-1; python3 main.py --help\nPython 3.10+, 외부 패키지 없음. --data-dir ./data 는 명령 앞에 둔다.\n예: python3 main.py --data-dir ./data add (대화형)\npython3 main.py update --id ID --amount 2000 (옵션 방식으로 고정)\npython3 main.py search --from 2026-01-01 --to 2026-12-31 --tag lunch\npython3 main.py budget set --month 2026-09 --amount 500000\npython3 main.py summary --month 2026-09 --top 3\npython3 main.py export --out backup.csv --month 2026-09\npython3 main.py import --from backup.csv\n저장: transactions.jsonl / categories.jsonl / budgets.jsonl (UTF-8).\nCSV: date,type,category,amount,memo,tags 헤더. tags는 쉼표 구분하며 CSV 인용규칙 준수.\nimport는 전 행 검증 후 원자적 반영, 오류면 0건 반영. 재가져오기는 중복 거래를 만든다.\n최신순 기준: 날짜 내림차순, 같은 날짜는 나중에 추가한 거래 우선.\n스트리밍: JSONL yield → 임시 SQLite 외부 정렬 → 한 행씩 출력. 전체 거래 리스트 적재 없음.\n원본 데이터 영구 저장 형식은 JSONL이며 SQLite는 정렬 중에만 쓰고 삭제한다.\n파일 변경은 동일 디렉터리 임시 파일+fsync+os.replace; POSIX flock으로 동시 변경 보호.\n기본 카테고리: food, transport, rent, etc, salary. 사용 중인 카테고리는 삭제 거부.\n오류는 원인/힌트 및 exit 1, 정상 exit 0. 예외/시간 측정은 데코레이터로 분리.\n'
+"b2-1 | 나만의 용돈 기입장 프로그램 만들기\n실행: python3 b2-1.py; cd generated/b2-1; python3 main.py --help\nPython 3.10+, 외부 패키지 없음. --data-dir ./data 는 명령 앞에 둔다.\n예: python3 main.py --data-dir ./data add (대화형)\npython3 main.py update --id ID --amount 2000 (옵션 방식으로 고정)\npython3 main.py search --from 2026-01-01 --to 2026-12-31 --tag lunch\npython3 main.py budget set --month 2026-09 --amount 500000\npython3 main.py summary --month 2026-09 --top 3\npython3 main.py export --out backup.csv --month 2026-09\npython3 main.py import --from backup.csv\n저장: transactions.jsonl / categories.jsonl / budgets.jsonl (UTF-8).\nCSV: date,type,category,amount,memo,tags 헤더. tags는 쉼표 구분하며 CSV 인용규칙 준수.\nimport는 전 행 검증 후 원자적 반영, 오류면 0건 반영. 재가져오기는 중복 거래를 만든다.\n최신순 기준: 날짜 내림차순, 같은 날짜는 나중에 추가한 거래 우선.\n스트리밍: JSONL yield → 임시 SQLite 외부 정렬 → 한 행씩 출력. 전체 거래 리스트 적재 없음.\n원본 데이터 영구 저장 형식은 JSONL이며 SQLite는 정렬 중에만 쓰고 삭제한다.\n파일 변경은 동일 디렉터리 임시 파일+fsync+os.replace; POSIX flock으로 동시 변경 보호.\n기본 카테고리: food, transport, rent, etc, salary. 사용 중인 카테고리는 삭제 거부.\n오류는 원인/힌트 및 exit 1, 정상 exit 0. 예외/시간 측정은 데코레이터로 분리.\n"
 
 from pathlib import Path
 import argparse
 
 # 각 문자열은 해당 경로에 생성되는 실제 소스입니다. 설명도 소스 주석에 담습니다.
 FILES = {
-'model.py': r'''
+    "model.py": r"""
 from dataclasses import dataclass, field, asdict
 from datetime import date
 import re
@@ -54,8 +54,8 @@ class Transaction:
 
     def record(self) -> dict:
         return asdict(self)
-''',
-'storage.py': r'''
+""",
+    "storage.py": r'''
 from pathlib import Path
 from contextlib import contextmanager
 from typing import Iterator, Iterable
@@ -121,7 +121,7 @@ class Store:
                     yield json.loads(payload)
             finally: db.close()
 ''',
-'service.py': r'''
+    "service.py": r"""
 from collections import defaultdict
 from itertools import chain, islice
 from pathlib import Path
@@ -215,8 +215,8 @@ class BudgetService:
         finally:
             if name and os.path.exists(name): os.unlink(name)
         return count
-''',
-'main.py': r'''
+""",
+    "main.py": r'''
 import argparse
 import functools
 import sys
@@ -322,11 +322,14 @@ if __name__=='__main__': sys.exit(main())
 ''',
 }
 
+
 def generate(destination: Path) -> None:
     """기존 파일을 덮어쓰지 않는, 반복 실행 가능한 프로젝트 생성기."""
     for relative, source in FILES.items():
         target = destination / relative
-        if target.exists() and target.read_text(encoding="utf-8") != source.lstrip("\n"):
+        if target.exists() and target.read_text(encoding="utf-8") != source.lstrip(
+            "\n"
+        ):
             raise SystemExit(f"기존 파일 보존: {target}. 다른 --out 폴더를 지정하세요.")
     for relative, source in FILES.items():
         target = destination / relative
@@ -334,8 +337,13 @@ def generate(destination: Path) -> None:
         target.write_text(source.lstrip("\n"), encoding="utf-8")
     print(f"생성 완료: {destination.resolve()}")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--out", type=Path, default=Path("generated") / Path(__file__).stem)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--out", type=Path, default=Path("generated") / Path(__file__).stem
+    )
     args = parser.parse_args()
     generate(args.out)

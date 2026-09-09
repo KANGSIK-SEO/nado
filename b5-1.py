@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-'b5-1 | 정보를 엄청 빠르게 찾아주는 작은 저장소 만들기\n실행: python3 b5-1.py → python3 generated/b5-1/main.py\n표준 라이브러리만 사용. dict/set/collections/heapq 사용 없이 직접 구현한다.\n해시맵 평균 O(1), 최악 O(n); 확장은 분할상환 O(1). 연결 리스트 이동 O(1).\nTTL 힙 O(log n), 만료는 모든 명령 시작 시 정리. 시간은 monotonic 사용.\nTTL 변경/삭제는 세대 번호로 무효화(lazy deletion), 과도한 잔여 힙은 재구성한다.\nCONFIG로 제한 축소 시에도 즉시 LRU 제거. OOM SET은 기존 값/TTL을 보존한다.\n메모리 산식은 UTF-8 키+값 바이트만 계산하며 실제 프로세스 RSS와 다르다.\n예시의 user:2(Bob)+user:3(Charlie)는 22가 아니라 6+3+6+7=22 바이트이다.\n'
+"b5-1 | 정보를 엄청 빠르게 찾아주는 작은 저장소 만들기\n실행: python3 b5-1.py → python3 generated/b5-1/main.py\n표준 라이브러리만 사용. dict/set/collections/heapq 사용 없이 직접 구현한다.\n해시맵 평균 O(1), 최악 O(n); 확장은 분할상환 O(1). 연결 리스트 이동 O(1).\nTTL 힙 O(log n), 만료는 모든 명령 시작 시 정리. 시간은 monotonic 사용.\nTTL 변경/삭제는 세대 번호로 무효화(lazy deletion), 과도한 잔여 힙은 재구성한다.\nCONFIG로 제한 축소 시에도 즉시 LRU 제거. OOM SET은 기존 값/TTL을 보존한다.\n메모리 산식은 UTF-8 키+값 바이트만 계산하며 실제 프로세스 RSS와 다르다.\n예시의 user:2(Bob)+user:3(Charlie)는 22가 아니라 6+3+6+7=22 바이트이다.\n"
 
 from pathlib import Path
 import argparse
 
 # 각 문자열은 해당 경로에 생성되는 실제 소스입니다. 설명도 소스 주석에 담습니다.
 FILES = {
-'dll.py': r'''
+    "dll.py": r'''
 # 자료구조 함수/메서드는 아래 클래스별 책임을 작은 단위로 나눠 구현한다.
 class Node:
     """노드는 데이터와 양방향 포인터를 보유한다."""
@@ -52,7 +52,7 @@ class LinkedList:
             yield node.data
             node = node.next
 ''',
-'hashmap.py': r'''
+    "hashmap.py": r'''
 class HashMap:
     """배열 버킷 + 체이닝. 내장 hash도 사용하지 않는다."""
     def __init__(self):
@@ -104,7 +104,7 @@ class HashMap:
     def size(self):
         return self.count
 ''',
-'heap.py': r'''
+    "heap.py": r'''
 class MinHeap:
     """완전 이진 트리를 배열로 저장: 부모 (i-1)//2, 자식 2i+1/2i+2."""
     def __init__(self):
@@ -148,7 +148,7 @@ class MinHeap:
             self.items[i], self.items[child] = self.items[child], self.items[i]
             i = child
 ''',
-'main.py': r'''
+    "main.py": r"""
 import json
 import shlex
 import time
@@ -281,14 +281,17 @@ if __name__ == '__main__':
         except (EOFError, KeyboardInterrupt):
             print()
             break
-''',
+""",
 }
+
 
 def generate(destination: Path) -> None:
     """기존 파일을 덮어쓰지 않는, 반복 실행 가능한 프로젝트 생성기."""
     for relative, source in FILES.items():
         target = destination / relative
-        if target.exists() and target.read_text(encoding="utf-8") != source.lstrip("\n"):
+        if target.exists() and target.read_text(encoding="utf-8") != source.lstrip(
+            "\n"
+        ):
             raise SystemExit(f"기존 파일 보존: {target}. 다른 --out 폴더를 지정하세요.")
     for relative, source in FILES.items():
         target = destination / relative
@@ -296,8 +299,13 @@ def generate(destination: Path) -> None:
         target.write_text(source.lstrip("\n"), encoding="utf-8")
     print(f"생성 완료: {destination.resolve()}")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--out", type=Path, default=Path("generated") / Path(__file__).stem)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--out", type=Path, default=Path("generated") / Path(__file__).stem
+    )
     args = parser.parse_args()
     generate(args.out)

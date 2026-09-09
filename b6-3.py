@@ -6,7 +6,10 @@
 """
 from pathlib import Path
 import argparse
-FILES={'requirements.txt':'fastapi\nuvicorn\nsqlalchemy\njinja2\npython-multipart\nitsdangerous\n','app.py':'''from fastapi import FastAPI,Request,Form
+
+FILES = {
+    "requirements.txt": "fastapi\nuvicorn\nsqlalchemy\njinja2\npython-multipart\nitsdangerous\n",
+    "app.py": """from fastapi import FastAPI,Request,Form
 from fastapi.responses import HTMLResponse,RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 app=FastAPI();app.add_middleware(SessionMiddleware,secret_key='change-this-in-production')
@@ -36,10 +39,21 @@ def create(request:Request,title:str=Form(...),body:str=Form(...)):
 def toggle(request:Request,index:int):
  if not user(request):return RedirectResponse('/login',status_code=303)
  posts[index]['status']='비공개' if posts[index]['status']=='공개' else '공개';return RedirectResponse('/app',status_code=303)
-'''}
+""",
+}
+
+
 # main: 인증 게시판 프로젝트 파일을 생성한다.
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=Path('auth-board'));a=p.parse_args()
- for n,s in FILES.items():f=a.out/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_text(s,encoding='utf-8')
- print('생성 완료:',a.out.resolve())
-if __name__=='__main__':main()
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--out", type=Path, default=Path("auth-board"))
+    a = p.parse_args()
+    for n, s in FILES.items():
+        f = a.out / n
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(s, encoding="utf-8")
+    print("생성 완료:", a.out.resolve())
+
+
+if __name__ == "__main__":
+    main()
