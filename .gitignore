@@ -1,0 +1,13 @@
+generated/
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+!.env.example
+node_modules/
+*.db
+*.db-*
+data/
+*.pem
+.DS_Store
