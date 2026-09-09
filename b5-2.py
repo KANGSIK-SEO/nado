@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 import shlex
 
 
+# merge_sort: 표준 sorted/list.sort 없이 안정 병합 정렬을 수행한다.
 def merge_sort(values, key=lambda x: x):
     """동률이면 왼쪽 항목을 먼저 선택해 안정성을 보장한다."""
     if len(values) <= 1: return list(values)

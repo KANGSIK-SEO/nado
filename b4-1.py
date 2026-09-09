@@ -28,6 +28,7 @@ if [[ -f "$LOG" ]]; then SIZE=$(wc -c < "$LOG"); if [[ "$SIZE" -gt 10485760 ]]; 
 for I in 10 9 8 7 6 5 4 3 2; do PREV=$((I-1)); [[ -f "$LOG.$PREV" ]] && mv "$LOG.$PREV" "$LOG.$I"; done
 exit "$fail"
 '''
+# main: Linux 모니터 스크립트를 생성한다.
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=Path('monitor.sh'));a=p.parse_args();a.out.write_text(SCRIPT,encoding='utf-8');a.out.chmod(0o750);print('생성 완료:',a.out.resolve())
 if __name__=='__main__':main()

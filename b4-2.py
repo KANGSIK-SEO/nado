@@ -4,6 +4,7 @@ OOM/CPU/Deadlock 증거를 추정하지 않고 로그에 있는 수치만 기록
 실행: python3 b4-2.py monitor.log app.log --out reports"""
 from pathlib import Path
 import argparse,re
+# main: 로그를 분석해 장애 보고서를 생성한다.
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('monitor',type=Path);p.add_argument('app',type=Path);p.add_argument('--out',type=Path,default=Path('reports'));a=p.parse_args();monitor=a.monitor.read_text(errors='replace');app=a.app.read_text(errors='replace');a.out.mkdir(parents=True,exist_ok=True)
     kind='OOM' if re.search(r'Memory|OOM|SELF-TERMINATED',app,re.I) else ('CPU' if re.search(r'WATCHDOG|CPU',app,re.I) else 'Deadlock')

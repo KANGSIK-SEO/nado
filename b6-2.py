@@ -56,6 +56,7 @@ def detail(request:Request,identifier:int,session:Session=Depends(db)):
 @app.post('/memos/{identifier}/delete',response_class=RedirectResponse,status_code=303)
 def delete(identifier:int,session:Session=Depends(db)): item=repo.get(session,identifier);item and service.remove(session,item);return '/memos'
 ''','templates/home.html':'<h1>나의 메모 앱</h1><p>메모를 등록하고 관리합니다.</p><a href="/memos">목록</a> <a href="/memos/new">새 메모</a>','templates/list.html':'<h1>메모 목록</h1>{% for memo in memos %}<article><a href="/memos/{{memo.id}}"><h2>{{memo.title}}</h2></a><p>{{memo.content}}</p></article>{% else %}<p>메모가 없습니다.</p>{% endfor %}<a href="/memos/new">새 메모</a>','templates/form.html':'<h1>새 메모</h1><form method="post" action="/memos"><label>제목<input name="title" required></label><label>내용<textarea name="content" required></textarea></label><button>저장</button></form>','templates/detail.html':'<h1>{{memo.title}}</h1><p>{{memo.content}}</p><form method="post" action="/memos/{{memo.id}}/delete"><button>삭제</button></form><a href="/memos">목록</a>','templates/not_found.html':'<h1>해당 데이터를 찾을 수 없습니다.</h1><a href="/memos">목록</a>'}
+# main: FastAPI CRUD 프로젝트 파일을 생성한다.
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=Path('memo-app'));a=p.parse_args()
  for n,s in FILES.items():f=a.out/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_text(s,encoding='utf-8')

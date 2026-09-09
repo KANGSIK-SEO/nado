@@ -4,16 +4,19 @@
 키는 환경변수로만 읽고 diff의 API key/token/email은 마스킹한다. 자동 commit/push는 하지 않는다.
 """
 import argparse,json,os,re,subprocess,sys,urllib.request
+# git: Git 명령을 실행하고 표준 출력을 반환한다.
 def git(*args):
     p=subprocess.run(['git',*args],text=True,capture_output=True)
     if p.returncode: raise RuntimeError(p.stderr.strip() or 'git 실패')
     return p.stdout
+# ask: AI API에 프롬프트를 보내 생성 결과를 반환한다.
 def ask(prompt,model,temperature,max_tokens):
     key=os.getenv('AI_API_KEY')
     if not key: raise RuntimeError('AI_API_KEY 환경변수가 없습니다')
     body=json.dumps({'model':model,'temperature':temperature,'max_tokens':max_tokens,'messages':[{'role':'system','content':'Senior developer. Follow the requested output format.'},{'role':'user','content':prompt}]}).encode()
     req=urllib.request.Request(os.getenv('AI_API_URL','https://api.openai.com/v1/chat/completions'),data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
     with urllib.request.urlopen(req,timeout=30) as response:return json.load(response)['choices'][0]['message']['content'].strip()
+# main: 변경사항 수집부터 초안 출력까지의 전체 흐름을 실행한다.
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('command',choices=['commit','pr']);p.add_argument('--model',default='gpt-4o-mini');p.add_argument('--temperature',type=float,default=.2);p.add_argument('--max-tokens',type=int,default=700);p.add_argument('--safe-mode',action='store_true');a=p.parse_args()
     status=git('status','--short');diff=git('diff');diff=re.sub(r'(?i)(api[_-]?key|token|password)(\s*[:=]\s*)[^\s]+',r'\1\2[REDACTED]',diff);diff=re.sub(r'[\w.+-]+@[\w.-]+','[EMAIL]',diff)

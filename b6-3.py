@@ -11,6 +11,7 @@ from fastapi.responses import HTMLResponse,RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 app=FastAPI();app.add_middleware(SessionMiddleware,secret_key='change-this-in-production')
 users={'demo':'demo123'};posts=[]
+# user: 세션에서 현재 로그인 사용자를 읽는다.
 def user(request):return request.session.get('user')
 @app.get('/',response_class=HTMLResponse)
 def home(request): return HTMLResponse(f'<h1>NADO BOARD</h1><a href="/login">로그인</a><a href="/app">게시판</a>')
@@ -36,6 +37,7 @@ def toggle(request:Request,index:int):
  if not user(request):return RedirectResponse('/login',status_code=303)
  posts[index]['status']='비공개' if posts[index]['status']=='공개' else '공개';return RedirectResponse('/app',status_code=303)
 '''}
+# main: 인증 게시판 프로젝트 파일을 생성한다.
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=Path('auth-board'));a=p.parse_args()
  for n,s in FILES.items():f=a.out/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_text(s,encoding='utf-8')

@@ -28,6 +28,7 @@ STACK="${1:?stack name}"; REGION="${AWS_REGION:-ap-northeast-2}"
 URL=$(aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --query "Stacks[0].Outputs[?OutputKey=='HealthUrl'].OutputValue" --output text)
 curl --fail --show-error "$URL"; echo "200 OK: $URL"
 '''
+# main: AWS 인프라 템플릿과 검증 파일을 생성한다.
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=Path('infra'));a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True);(a.out/'template.yaml').write_text(T,encoding='utf-8');(a.out/'verify.sh').write_text(V,encoding='utf-8');(a.out/'verify.sh').chmod(0o750);(a.out/'cleanup-checklist.txt').write_text('EC2 terminated\nEBS deleted\nElastic IP released\nIGW detached/deleted\nVPC/subnet/routes deleted\nBilling 확인\n',encoding='utf-8');print('생성 완료:',a.out.resolve())
 if __name__=='__main__':main()

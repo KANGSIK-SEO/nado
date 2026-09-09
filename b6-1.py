@@ -39,6 +39,7 @@ QUERIES=[
 ('15 대여일 범위 검색을 위한 인덱스: 전체 스캔 대신 범위 탐색','CREATE INDEX idx_rental_date ON rental(rented_at);'),
 ]
 
+# seed_sql: 네 테이블에 관계가 연결된 샘플 데이터를 만든다.
 def seed_sql():
     lines=[]
     for i in range(1,13):
@@ -51,6 +52,7 @@ def seed_sql():
         lines.append(f"INSERT INTO rental VALUES({i},{(i-1)//2+1},{i},'2026-09-{i:02d}',{returned},'{status}');")
     return '\n'.join(lines)+'\n'
 
+# main: SQLite 파일과 SQL 실행 결과를 생성한다.
 def main():
     parser=argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--out',type=Path,default=Path('generated/b6-1'))

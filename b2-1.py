@@ -13,16 +13,19 @@ import re
 import uuid
 
 
+# check_date: 날짜 형식을 검증하고 정상 값을 반환한다.
 def check_date(value: str) -> str:
     if not re.fullmatch(r'\d{4}-\d{2}-\d{2}',value):
         raise ValueError('날짜는 YYYY-MM-DD 형식입니다')
     date.fromisoformat(value)
     return value
 
+# check_month: YYYY-MM 월 형식을 검증한다.
 def check_month(value: str) -> str:
     check_date(value+'-01')
     return value
 
+# positive: 양의 정수 금액만 허용한다.
 def positive(value: str) -> int:
     if not re.fullmatch(r'[0-9]+',str(value)) or int(value)<=0:
         raise ValueError('금액은 양수 정수여야 합니다')
@@ -225,6 +228,7 @@ from storage import Store
 from service import BudgetService
 
 
+# guarded: CLI 오류를 사용자 메시지와 종료 코드로 변환한다.
 def guarded(function):
     """CLI 공통 예외/종료 코드와 시간 측정을 비즈니스 로직에서 분리."""
     @functools.wraps(function)
@@ -237,14 +241,17 @@ def guarded(function):
         finally: print(f'[실행시간] {time.perf_counter()-started:.3f}초',file=sys.stderr)
     return wrapper
 
+# natural: argparse에서 사용할 양의 정수 변환기다.
 def natural(value):
     try: return positive(value)
     except ValueError as error: raise argparse.ArgumentTypeError(str(error)) from error
 
+# filters: 기간 검색 공통 옵션을 등록한다.
 def filters(parser):
     parser.add_argument('--from',dest='date_from'); parser.add_argument('--to'); parser.add_argument('--month')
 
 @guarded
+# main: 명령행을 해석하고 서비스 기능을 호출한다.
 def main():
     parser=argparse.ArgumentParser(description='JSONL 용돈 기입장')
     parser.add_argument('--data-dir',type=Path,default=Path('data'))
