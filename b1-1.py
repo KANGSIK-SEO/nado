@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: HTML은 뼈대, CSS는 색과 배치, JavaScript는 버튼 동작이다.
 """b1-1 답안: 순수 HTML/CSS/JS 포트폴리오 생성기.
 실행 후 생성 폴더에서 `python3 -m http.server 8080`을 실행한다.
 다크 모드(localStorage), 햄버거, 부드러운 스크롤, IntersectionObserver,

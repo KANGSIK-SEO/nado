@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 커밋은 부모와 연결된 사진이고 브랜치는 사진을 가리키는 이름표다.
 """b5-2 | 파일 변경 이력을 흉내 내는 Mini Git (메타데이터만, 실제 파일 추적 없음)
 실행: python3 b5-2.py (Python 3.10+, 표준 라이브러리)
 INIT "Alice" → COMMIT "Initial commit" → BRANCH feature → SWITCH feature

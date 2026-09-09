@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 해시맵은 열쇠 찾기, 리스트는 최근 순서, 힙은 만료 순서를 맡는다.
 "b5-1 | 정보를 엄청 빠르게 찾아주는 작은 저장소 만들기\n실행: python3 b5-1.py → python3 generated/b5-1/main.py\n표준 라이브러리만 사용. dict/set/collections/heapq 사용 없이 직접 구현한다.\n해시맵 평균 O(1), 최악 O(n); 확장은 분할상환 O(1). 연결 리스트 이동 O(1).\nTTL 힙 O(log n), 만료는 모든 명령 시작 시 정리. 시간은 monotonic 사용.\nTTL 변경/삭제는 세대 번호로 무효화(lazy deletion), 과도한 잔여 힙은 재구성한다.\nCONFIG로 제한 축소 시에도 즉시 LRU 제거. OOM SET은 기존 값/TTL을 보존한다.\n메모리 산식은 UTF-8 키+값 바이트만 계산하며 실제 프로세스 RSS와 다르다.\n예시의 user:2(Bob)+user:3(Charlie)는 22가 아니라 6+3+6+7=22 바이트이다.\n"
 
 from pathlib import Path

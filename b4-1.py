@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: monitor.sh는 컴퓨터의 CPU, 메모리, 디스크를 주기적으로 검사한다.
 """b4-1: Linux agent 운영 환경과 monitor.sh를 생성한다.
 Ubuntu에서 일반 계정으로 AGENT_HOME, AGENT_PORT=15034, AGENT_LOG_DIR을 설정한다.
 스크립트는 프로세스/포트 health check 실패 시 1, 자원 임계 초과는 WARNING만 낸다.

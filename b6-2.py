@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 요청은 라우터, 규칙은 서비스, DB 읽기는 저장소가 담당한다.
 """b6-2: FastAPI + SQLAlchemy + Jinja2 메모 CRUD 프로젝트 생성기.
 실행: python3 b6-2.py --out memo-app; cd memo-app; python3 -m venv .venv;
 source .venv/bin/activate; pip install -r requirements.txt; uvicorn app:app --reload.

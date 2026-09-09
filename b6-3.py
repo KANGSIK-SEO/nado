@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 로그인한 사람에게만 게시판 문을 열고 세션으로 이름표를 기억한다.
 """b6-3: FastAPI 세션 로그인 + SQLAlchemy 3모델 게시판 생성기.
 테스트 계정 demo/demo123, 공개 /와 /login, 보호 /app 경로다.
 실행: python3 b6-3.py --out auth-app; 생성 폴더에서 pip install fastapi uvicorn sqlalchemy jinja2 python-multipart itsdangerous.

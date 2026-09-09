@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 로그를 읽고 메모리, CPU, 교착상태 문제의 증거를 정리한다.
 """b4-2: 제공된 monitor/app 로그에서 실제 관측값을 읽어 장애 보고서를 만든다.
 OOM/CPU/Deadlock 증거를 추정하지 않고 로그에 있는 수치만 기록한다.
 실행: python3 b4-2.py monitor.log app.log --out reports"""

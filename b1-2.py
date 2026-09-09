@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: React 화면은 작은 부품으로 나뉘며 입력 변화가 다시 화면을 그린다.
 """b1-2 답안: React + Supabase 메모 SPA 생성기.
 Supabase는 원격 PostgreSQL/Auth를 제공하는 백엔드 서비스다. 계정이 없으면
 생성 후 README 대신 이 주석의 SQL을 Supabase SQL Editor에서 실행한다.

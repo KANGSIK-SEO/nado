@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: VPC는 집, 라우트는 길, 보안 그룹은 대문, EC2는 컴퓨터다.
 """b3-1: AWS 서울 리전 VPC/공개 서브넷/IGW/보안 그룹/Ubuntu EC2 CloudFormation 생성기.
 실행 후 template.yaml을 검토해 `aws cloudformation deploy`한다.
 HTTP 80은 공개, SSH 22는 MyIpCidr만 허용한다. 종료는 delete-stack 후 EBS/EIP/Billing을 확인한다."""

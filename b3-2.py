@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: Git 변경 내용을 읽어 AI에게 커밋이나 PR 설명을 부탁한다.
 """b3-2: git diff를 AI API에 보내 커밋/PR 초안을 출력한다.
 실행: AI_API_KEY=... python3 b3-2.py commit --safe-mode
 키는 환경변수로만 읽고 diff의 API key/token/email은 마스킹한다. 자동 commit/push는 하지 않는다.

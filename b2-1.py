@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+## 쉬운 설명: 가계부는 거래를 검증한 뒤 JSONL 파일에 한 줄씩 오래 보관한다.
 "b2-1 | 나만의 용돈 기입장 프로그램 만들기\n실행: python3 b2-1.py; cd generated/b2-1; python3 main.py --help\nPython 3.10+, 외부 패키지 없음. --data-dir ./data 는 명령 앞에 둔다.\n예: python3 main.py --data-dir ./data add (대화형)\npython3 main.py update --id ID --amount 2000 (옵션 방식으로 고정)\npython3 main.py search --from 2026-01-01 --to 2026-12-31 --tag lunch\npython3 main.py budget set --month 2026-09 --amount 500000\npython3 main.py summary --month 2026-09 --top 3\npython3 main.py export --out backup.csv --month 2026-09\npython3 main.py import --from backup.csv\n저장: transactions.jsonl / categories.jsonl / budgets.jsonl (UTF-8).\nCSV: date,type,category,amount,memo,tags 헤더. tags는 쉼표 구분하며 CSV 인용규칙 준수.\nimport는 전 행 검증 후 원자적 반영, 오류면 0건 반영. 재가져오기는 중복 거래를 만든다.\n최신순 기준: 날짜 내림차순, 같은 날짜는 나중에 추가한 거래 우선.\n스트리밍: JSONL yield → 임시 SQLite 외부 정렬 → 한 행씩 출력. 전체 거래 리스트 적재 없음.\n원본 데이터 영구 저장 형식은 JSONL이며 SQLite는 정렬 중에만 쓰고 삭제한다.\n파일 변경은 동일 디렉터리 임시 파일+fsync+os.replace; POSIX flock으로 동시 변경 보호.\n기본 카테고리: food, transport, rent, etc, salary. 사용 중인 카테고리는 삭제 거부.\n오류는 원인/힌트 및 exit 1, 정상 exit 0. 예외/시간 측정은 데코레이터로 분리.\n"
 
 from pathlib import Path
